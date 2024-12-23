@@ -1,0 +1,593 @@
+openapi: "3.0.1"
+info:
+  title: Client Service API
+  description: API to manage clients
+  version: "1.0.0"
+  contact:
+    name: Piere Custodio
+    email: piere_07@hotmail.com
+servers:
+  - url: http://localhost:8081
+    description: Local server
+tags:
+  - name: clients
+    description: Operations about clients
+  - name: persons
+    description: Operations about persons
+  - name: legalRepresentatives
+    description: Operations about legal representatives
+  - name: authorizedSignatories
+    description: Operations about authorized signatories
+paths:
+  /api/clients:
+    post:
+      tags:
+        - clients
+      description: Create a new client
+      summary: Create client
+      operationId: createClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+      responses:
+        '201':
+          description: Client created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/AlreadyExists'
+
+    put:
+      tags:
+        - clients
+      summary: Update an existing client
+      description: Update a client
+      operationId: updateClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+      responses:
+        '200':
+          description: Client updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      tags:
+        - clients
+      description: Use to request all clients
+      summary: Get all clients
+      operationId: findAllClients
+      responses:
+        '200':
+          description: A list of clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDto'
+
+    delete:
+      tags:
+        - clients
+      description: Delete an existing client
+      summary: Client deleted
+      operationId: deleteClient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientDto'
+      responses:
+        '200':
+          description: Client deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ClientDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/clients/{id}:
+    get:
+      tags:
+        - clients
+      description: Use to request a client by ID
+      summary: Get client by ID
+      operationId: findById
+      parameters:
+        - name: id
+          in: path
+          description: ID of client to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A client
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/clients/findAllByIdList:
+    post:
+      tags:
+        - clients
+      description: Use to request a list of clients by ID
+      summary: Get clients by ID list
+      operationId: findAllByIdList
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: A list of clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/clients/findByDocumentNumber/{documentNumber}:
+    get:
+      tags:
+        - clients
+      description: Use to request a client by document number
+      summary: Get client by document number
+      operationId: findByDocumentNumber
+      parameters:
+        - name: documentNumber
+          in: path
+          description: Document number of client to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A client
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDto'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/persons:
+    post:
+      tags:
+        - persons
+      description: Create a new person
+      summary: Create person
+      operationId: createPerson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonDto'
+      responses:
+        '201':
+          description: Person created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/AlreadyExists'
+    put:
+      tags:
+        - persons
+      summary: Update an existing person
+      description: Update a person
+      operationId: updatePerson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonDto'
+      responses:
+        '200':
+          description: Person updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      tags:
+        - persons
+      description: Use to request all persons
+      summary: Get all persons
+      operationId: findAllPersons
+      responses:
+        '200':
+          description: A list of persons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonDto'
+    delete:
+      tags:
+        - persons
+      description: Delete an existing person
+      summary: Person deleted
+      operationId: deletePerson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonDto'
+      responses:
+        '200':
+          description: Person deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/PersonDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/legal-representantives:
+    post:
+      tags:
+        - legalRepresentatives
+      description: Create a new legal representative
+      summary: Create legal representative
+      operationId: createLegalRepresentative
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegalRepresentativeDto'
+      responses:
+        '201':
+          description: Legal representative created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalRepresentativeDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/AlreadyExists'
+    put:
+      tags:
+        - legalRepresentatives
+      summary: Update an existing legal representative
+      description: Update a legal representative
+      operationId: updateLegalRepresentative
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegalRepresentativeDto'
+      responses:
+        '200':
+          description: Legal representative updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalRepresentativeDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      tags:
+        - legalRepresentatives
+      description: Use to request all legal representatives
+      summary: Get all legal representatives
+      operationId: findAllLegalRepresentatives
+      responses:
+        '200':
+          description: A list of legal representatives
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LegalRepresentativeDto'
+    delete:
+      tags:
+        - legalRepresentatives
+      description: Delete an existing legal representative
+      summary: Legal representative deleted
+      operationId: deleteLegalRepresentative
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LegalRepresentativeDto'
+      responses:
+        '200':
+          description: Legal representative deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/LegalRepresentativeDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/authorized-signatories:
+    post:
+      tags:
+        - authorizedSignatories
+      description: Create a new authorized signatory
+      summary: Create authorized signatory
+      operationId: createAuthorizedSignatory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorizedSignatoryDto'
+      responses:
+        '201':
+          description: Authorized signatory created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizedSignatoryDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/AlreadyExists'
+    put:
+      tags:
+        - authorizedSignatories
+      summary: Update an existing authorized signatory
+      description: Update an authorized signatory
+      operationId: updateAuthorizedSignatory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorizedSignatoryDto'
+      responses:
+        '200':
+          description: Authorized signatory updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizedSignatoryDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    get:
+      tags:
+        - authorizedSignatories
+      description: Use to request all authorized signatories
+      summary: Get all authorized signatories
+      operationId: findAllAuthorizedSignatories
+      responses:
+        '200':
+          description: A list of authorized signatories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthorizedSignatoryDto'
+    delete:
+      tags:
+        - authorizedSignatories
+      description: Delete an existing authorized signatory
+      summary: Authorized signatory deleted
+      operationId: deleteAuthorizedSignatory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorizedSignatoryDto'
+      responses:
+        '200':
+          description: Authorized signatory deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/AuthorizedSignatoryDto'
+components:
+  responses:
+      NotFound:
+        description: Not found
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Not found
+      AlreadyExists:
+        description: already exists
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Already exists
+      BadRequest:
+        description: Bad request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Bad request
+  schemas:
+    PersonDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: person ID
+        tradeName:
+          type: string
+          description: Trade name of the company
+        companyName:
+          type: string
+          description: Company name
+        name:
+          type: string
+          description: Name of the person
+          pattern: '^[A-Za-z]{1,50}$'
+        lastname:
+          type: string
+          description: Lastname of the person
+          pattern: '^[A-Za-z]{1,50}$'
+        email:
+          type: string
+          description: Email of the person
+          format: email
+        address:
+          type: string
+          description: Address of the person
+        cellphone:
+          type: string
+          description: Cellphone of the person
+        phone:
+          type: string
+          description: Phone of the person
+        documentType:
+          type: string
+          description: Document type of the person
+          enum:
+            - DNI
+            - CE
+            - RUC
+            - PASSPORT
+        documentNumber:
+          type: string
+          description: Document number of the person
+          pattern: '^[0-9]{8,12}$'
+        birthdate:
+          type: string
+          description: Birthdate of the person
+          format: date
+          pattern: '^\\d{4}-\\d{2}-\\d{2}$'
+      required:
+        - email
+        - address
+        - cellphone
+        - documentType
+        - documentNumber
+    LegalRepresentativeDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Legal Representative ID
+        person:
+          $ref: '#/components/schemas/PersonDto'
+        status:
+          type: boolean
+          description: Status of the legal representative
+      required:
+        - person
+        - status
+    AuthorizedSignatoryDto:
+      type: object
+      properties:
+          id:
+            type: string
+            description: Authorized Signatory ID
+          person:
+            $ref: '#/components/schemas/PersonDto'
+          status:
+            type: boolean
+            description: Status of the authorized signatory
+      required:
+        - person
+        - status
+    ClientDto:
+      type: object
+      properties:
+          id:
+            type: string
+            description: Client ID
+          clientType:
+            type: string
+            description: Type of the client
+            enum:
+              - PERSONAL
+              - EMPRESARIAL
+          person:
+            $ref: '#/components/schemas/PersonDto'
+          legalRepresentatives:
+            type: array
+            items:
+              $ref: '#/components/schemas/LegalRepresentativeDto'
+          authorizedSignatories:
+            type: array
+            items:
+              $ref: '#/components/schemas/AuthorizedSignatoryDto'
+          createAt:
+            type: string
+            description: Creation date of the client
+            format: date
+            pattern: '^\\d{4}-\\d{2}-\\d{2}$'
+          endAt:
+            type: string
+            description: End date of the client
+            format: date
+            pattern: '^\\d{4}-\\d{2}-\\d{2}$'
+          status: 
+            type: boolean
+            description: Status of the client
+      required:
+        - clientType
+        - person
+        - status
