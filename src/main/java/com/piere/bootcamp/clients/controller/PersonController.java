@@ -42,7 +42,7 @@ public class PersonController {
      *         or Bad request (status code 400)
      *         or already exists (status code 409)
      */
-    @ApiOperation(value = "Create person", nickname = "createPerson", notes = "Create a new person", response = PersonDto.class, tags={ "persons", })
+    @ApiOperation(value = "Create person", nickname = "createPerson", notes = "Create a new person", response = PersonDto.class, tags = { "persons", })
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Person created", response = PersonDto.class),
         @ApiResponse(code = 400, message = "Bad request"),
@@ -51,7 +51,7 @@ public class PersonController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<PersonDto>> createPerson(@ApiParam(value = "" ,required=true )  @Valid @RequestBody PersonDto personDto) {
+    Mono<ResponseEntity<PersonDto>> createPerson(@ApiParam(value = "", required = true)  @Valid @RequestBody PersonDto personDto) {
         return personService.createPerson(personDto)
                 .map(person -> ResponseEntity.created(URI.create("/api/persons/")).body(person));
     }
@@ -65,7 +65,7 @@ public class PersonController {
      *         or Bad request (status code 400)
      *         or Not found (status code 404)
      */
-    @ApiOperation(value = "Person deleted", nickname = "deletePerson", notes = "Delete an existing person", response = PersonDto.class, responseContainer = "List", tags={ "persons", })
+    @ApiOperation(value = "Person deleted", nickname = "deletePerson", notes = "Delete an existing person", response = PersonDto.class, responseContainer = "List", tags = { "persons", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Person deleted", response = PersonDto.class, responseContainer = "List"),
         @ApiResponse(code = 400, message = "Bad request"),
@@ -74,7 +74,7 @@ public class PersonController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<Void>> deletePerson(@ApiParam(value = "" ,required=true )  @Valid @RequestBody PersonDto personDto) {
+    Mono<ResponseEntity<Void>> deletePerson(@ApiParam(value = "", required = true)  @Valid @RequestBody PersonDto personDto) {
         return personService.deletePerson(personDto)
                 .map(person -> ResponseEntity.ok().body(person));
     }
@@ -85,7 +85,7 @@ public class PersonController {
      *
      * @return A list of persons (status code 200)
      */
-    @ApiOperation(value = "Get all persons", nickname = "findAllPersons", notes = "Use to request all persons", response = PersonDto.class, responseContainer = "List", tags={ "persons", })
+    @ApiOperation(value = "Get all persons", nickname = "findAllPersons", notes = "Use to request all persons", response = PersonDto.class, responseContainer = "List", tags = { "persons", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "A list of persons", response = PersonDto.class, responseContainer = "List") })
     @GetMapping(
@@ -104,7 +104,7 @@ public class PersonController {
      *         or Bad request (status code 400)
      *         or Not found (status code 404)
      */
-    @ApiOperation(value = "Update an existing person", nickname = "updatePerson", notes = "Update a person", response = PersonDto.class, tags={ "persons", })
+    @ApiOperation(value = "Update an existing person", nickname = "updatePerson", notes = "Update a person", response = PersonDto.class, tags = { "persons", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Person updated", response = PersonDto.class),
         @ApiResponse(code = 400, message = "Bad request"),
@@ -113,7 +113,7 @@ public class PersonController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<PersonDto>> updatePerson(@ApiParam(value = "" ,required=true )  @Valid @RequestBody PersonDto personDto) {
+    Mono<ResponseEntity<PersonDto>> updatePerson(@ApiParam(value = "", required = true)  @Valid @RequestBody PersonDto personDto) {
         return personService.updatePerson(personDto)
                 .map(person -> ResponseEntity.ok(person));
     }

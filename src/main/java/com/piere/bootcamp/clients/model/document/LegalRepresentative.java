@@ -19,7 +19,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Document(collection="legal_representatives")
+@Document(collection = "legal_representatives")
 public class LegalRepresentative implements Serializable {
     
     private static final long serialVersionUID = 1L;

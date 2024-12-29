@@ -28,7 +28,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Document(collection="clients")
+@Document(collection = "clients")
 public class Client implements Serializable {
     
     private static final long serialVersionUID = 1L;

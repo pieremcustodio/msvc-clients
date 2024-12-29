@@ -43,12 +43,13 @@ public class LegalRepresentativeController {
      *         or Bad request (status code 400)
      *         or already exists (status code 409)
      */
-    @ApiOperation(value = "Create legal representative", nickname = "createLegalRepresentative", notes = "Create a new legal representative", response = LegalRepresentativeDto.class, tags={ "legalRepresentatives", })
+    @ApiOperation(value = "Create legal representative", nickname = "createLegalRepresentative", notes = "Create a new legal representative",
+            response = LegalRepresentativeDto.class, tags = { "legalRepresentatives", })
     @PostMapping(
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<LegalRepresentativeDto>> createLegalRepresentative(@ApiParam(value = "" ,required=true )  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
+    Mono<ResponseEntity<LegalRepresentativeDto>> createLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
         return legalRepresentativeService.createLegalRepresentative(legalRepresentativeDto)
                 .map(legalRepresentative -> ResponseEntity.created(URI.create("/api/legalrepresentatives/")).body(legalRepresentative));
     }
@@ -61,7 +62,8 @@ public class LegalRepresentativeController {
      * @return Legal representative deleted (status code 200)
      *         or Bad request (status code 400)
      */
-    @ApiOperation(value = "Legal representative deleted", nickname = "deleteLegalRepresentative", notes = "Delete an existing legal representative", response = LegalRepresentativeDto.class, responseContainer = "List", tags={ "legalRepresentatives", })
+    @ApiOperation(value = "Legal representative deleted", nickname = "deleteLegalRepresentative", notes = "Delete an existing legal representative",
+            response = LegalRepresentativeDto.class, responseContainer = "List", tags = { "legalRepresentatives", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Legal representative deleted", response = LegalRepresentativeDto.class, responseContainer = "List"),
         @ApiResponse(code = 400, message = "Bad request") })
@@ -69,7 +71,7 @@ public class LegalRepresentativeController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<Void>> deleteLegalRepresentative(@ApiParam(value = "" ,required=true )  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
+    Mono<ResponseEntity<Void>> deleteLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
         return legalRepresentativeService.deleteLegalRepresentative(legalRepresentativeDto)
                 .map(legalRepresentative -> ResponseEntity.ok().body(legalRepresentative));
     }
@@ -80,7 +82,8 @@ public class LegalRepresentativeController {
      *
      * @return A list of legal representatives (status code 200)
      */
-    @ApiOperation(value = "Get all legal representatives", nickname = "findAllLegalRepresentatives", notes = "Use to request all legal representatives", response = LegalRepresentativeDto.class, responseContainer = "List", tags={ "legalRepresentatives", })
+    @ApiOperation(value = "Get all legal representatives", nickname = "findAllLegalRepresentatives", notes = "Use to request all legal representatives",
+            response = LegalRepresentativeDto.class, responseContainer = "List", tags = { "legalRepresentatives", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "A list of legal representatives", response = LegalRepresentativeDto.class, responseContainer = "List") })
     @GetMapping(
@@ -99,7 +102,8 @@ public class LegalRepresentativeController {
      *         or Bad request (status code 400)
      *         or Not found (status code 404)
      */
-    @ApiOperation(value = "Update an existing legal representative", nickname = "updateLegalRepresentative", notes = "Update a legal representative", response = LegalRepresentativeDto.class, tags={ "legalRepresentatives", })
+    @ApiOperation(value = "Update an existing legal representative", nickname = "updateLegalRepresentative", notes = "Update a legal representative",
+            response = LegalRepresentativeDto.class, tags = { "legalRepresentatives", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Legal representative updated", response = LegalRepresentativeDto.class),
         @ApiResponse(code = 400, message = "Bad request"),
@@ -108,7 +112,7 @@ public class LegalRepresentativeController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<LegalRepresentativeDto>> updateLegalRepresentative(@ApiParam(value = "" ,required=true )  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
+    Mono<ResponseEntity<LegalRepresentativeDto>> updateLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
         return legalRepresentativeService.updateLegalRepresentative(legalRepresentativeDto)
                 .map(legalRepresentative -> ResponseEntity.ok(legalRepresentative));
     }

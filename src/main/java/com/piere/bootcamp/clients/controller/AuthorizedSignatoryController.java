@@ -32,50 +32,47 @@ public class AuthorizedSignatoryController {
 
     @Autowired
     private AuthorizedSignatoryService authorizedSignatoryService;
-    
+
     /**
      * POST /api/authorized-signatories : Create authorized signatory
      * Create a new authorized signatory
      *
-     * @param authorizedSignatoryDto  (required)
+     * @param authorizedSignatoryDto (required)
      * @return Authorized signatory created (status code 201)
      *         or Bad request (status code 400)
      *         or already exists (status code 409)
      */
-    @ApiOperation(value = "Create authorized signatory", nickname = "createAuthorizedSignatory", notes = "Create a new authorized signatory", response = AuthorizedSignatoryDto.class, tags={ "authorizedSignatories", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Authorized signatory created", response = AuthorizedSignatoryDto.class),
-        @ApiResponse(code = 400, message = "Bad request"),
-        @ApiResponse(code = 409, message = "already exists") })
-    @PostMapping(
-        produces = { "application/json" },
-        consumes = { "application/json" }
-    )
-    Mono<ResponseEntity<AuthorizedSignatoryDto>> createAuthorizedSignatory(@ApiParam(value = "" ,required=true )  @Valid @RequestBody AuthorizedSignatoryDto authorizedSignatoryDto) {
+    @ApiOperation(value = "Create authorized signatory", nickname = "createAuthorizedSignatory", notes = "Create a new authorized signatory", response = AuthorizedSignatoryDto.class, tags = {
+            "authorizedSignatories", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Authorized signatory created", response = AuthorizedSignatoryDto.class),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 409, message = "already exists") })
+    @PostMapping(produces = { "application/json" }, consumes = { "application/json" })
+    Mono<ResponseEntity<AuthorizedSignatoryDto>> createAuthorizedSignatory(
+            @ApiParam(value = "", required = true) @Valid @RequestBody AuthorizedSignatoryDto authorizedSignatoryDto) {
         return authorizedSignatoryService.createAuthorizedSignatory(authorizedSignatoryDto)
-                .map(authorizedSignatory -> ResponseEntity.created(URI.create("/api/authorizedsignatories")).body(authorizedSignatory));
+                .map(authorizedSignatory -> ResponseEntity.created(URI.create("/api/authorizedsignatories"))
+                        .body(authorizedSignatory));
     }
-
 
     /**
      * DELETE /api/authorized-signatories : Authorized signatory deleted
      * Delete an existing authorized signatory
      *
-     * @param authorizedSignatoryDto  (required)
+     * @param authorizedSignatoryDto (required)
      * @return Authorized signatory deleted (status code 200)
      */
-    @ApiOperation(value = "Authorized signatory deleted", nickname = "deleteAuthorizedSignatory", notes = "Delete an existing authorized signatory", response = AuthorizedSignatoryDto.class, responseContainer = "List", tags={ "authorizedSignatories", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Authorized signatory deleted", response = AuthorizedSignatoryDto.class, responseContainer = "List") })
-    @DeleteMapping(
-        produces = { "application/json" },
-        consumes = { "application/json" }
-    )
-    Mono<ResponseEntity<Void>> deleteAuthorizedSignatory(@ApiParam(value = "" ,required=true )  @Valid @RequestBody AuthorizedSignatoryDto authorizedSignatoryDto) {
+    @ApiOperation(value = "Authorized signatory deleted", nickname = "deleteAuthorizedSignatory", notes = "Delete an existing authorized signatory",
+            response = AuthorizedSignatoryDto.class, responseContainer = "List", tags = {"authorizedSignatories", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Authorized signatory deleted", response = AuthorizedSignatoryDto.class, responseContainer = "List") })
+    @DeleteMapping(produces = { "application/json" }, consumes = { "application/json" })
+    Mono<ResponseEntity<Void>> deleteAuthorizedSignatory(
+            @ApiParam(value = "", required = true) @Valid @RequestBody AuthorizedSignatoryDto authorizedSignatoryDto) {
         return authorizedSignatoryService.deleteAuthorizedSignatory(authorizedSignatoryDto)
                 .map(authorizedSignatory -> ResponseEntity.ok().body(authorizedSignatory));
     }
-
 
     /**
      * GET /api/authorized-signatories : Get all authorized signatories
@@ -83,36 +80,33 @@ public class AuthorizedSignatoryController {
      *
      * @return A list of authorized signatories (status code 200)
      */
-    @ApiOperation(value = "Get all authorized signatories", nickname = "findAllAuthorizedSignatories", notes = "Use to request all authorized signatories", response = AuthorizedSignatoryDto.class, responseContainer = "List", tags={ "authorizedSignatories", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "A list of authorized signatories", response = AuthorizedSignatoryDto.class, responseContainer = "List") })
-    @GetMapping(
-        produces = { "application/json" }
-    )
+    @ApiOperation(value = "Get all authorized signatories", nickname = "findAllAuthorizedSignatories", notes = "Use to request all authorized signatories", 
+            response = AuthorizedSignatoryDto.class, responseContainer = "List", tags = {"authorizedSignatories", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "A list of authorized signatories", response = AuthorizedSignatoryDto.class, responseContainer = "List") })
+    @GetMapping(produces = { "application/json" })
     Mono<ResponseEntity<Flux<AuthorizedSignatoryDto>>> findAllAuthorizedSignatories() {
         return Mono.just(ResponseEntity.ok().body(authorizedSignatoryService.findAllAuthorizedSignatories()));
     }
-
 
     /**
      * PUT /api/authorized-signatories : Update an existing authorized signatory
      * Update an authorized signatory
      *
-     * @param authorizedSignatoryDto  (required)
+     * @param authorizedSignatoryDto (required)
      * @return Authorized signatory updated (status code 200)
      *         or Bad request (status code 400)
      *         or Not found (status code 404)
      */
-    @ApiOperation(value = "Update an existing authorized signatory", nickname = "updateAuthorizedSignatory", notes = "Update an authorized signatory", response = AuthorizedSignatoryDto.class, tags={ "authorizedSignatories", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Authorized signatory updated", response = AuthorizedSignatoryDto.class),
-        @ApiResponse(code = 400, message = "Bad request"),
-        @ApiResponse(code = 404, message = "Not found") })
-    @PutMapping(
-        produces = { "application/json" },
-        consumes = { "application/json" }
-    )
-    Mono<ResponseEntity<AuthorizedSignatoryDto>> updateAuthorizedSignatory(@ApiParam(value = "" ,required=true )  @Valid @RequestBody AuthorizedSignatoryDto authorizedSignatoryDto) {
+    @ApiOperation(value = "Update an existing authorized signatory", nickname = "updateAuthorizedSignatory", notes = "Update an authorized signatory", response = AuthorizedSignatoryDto.class, tags = {
+            "authorizedSignatories", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Authorized signatory updated", response = AuthorizedSignatoryDto.class),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 404, message = "Not found") })
+    @PutMapping(produces = { "application/json" }, consumes = { "application/json" })
+    Mono<ResponseEntity<AuthorizedSignatoryDto>> updateAuthorizedSignatory(
+            @ApiParam(value = "", required = true) @Valid @RequestBody AuthorizedSignatoryDto authorizedSignatoryDto) {
         return authorizedSignatoryService.updateAuthorizedSignatory(authorizedSignatoryDto)
                 .map(authorizedSignatory -> ResponseEntity.ok(authorizedSignatory));
     }

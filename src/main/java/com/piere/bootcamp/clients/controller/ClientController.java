@@ -44,7 +44,7 @@ public class ClientController {
      *         or Bad request (status code 400)
      *         or already exists (status code 409)
      */
-    @ApiOperation(value = "Create client", nickname = "create", notes = "Create a new client", response = ClientDto.class, tags={ "clients", })
+    @ApiOperation(value = "Create client", nickname = "create", notes = "Create a new client", response = ClientDto.class, tags = { "clients", })
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Client created", response = ClientDto.class),
         @ApiResponse(code = 400, message = "Bad request"),
@@ -53,7 +53,7 @@ public class ClientController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<ClientDto>> createClient(@ApiParam(value = "" ,required=true )  @Valid @RequestBody ClientDto clientDto) {
+    Mono<ResponseEntity<ClientDto>> createClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
         return clientService.createClient(clientDto)
                 .map(client -> ResponseEntity.created(URI.create("/api/clients/")).body(client));
     }
@@ -68,7 +68,7 @@ public class ClientController {
      *         or Bad request (status code 400)
      *         or Not found (status code 404)
      */
-    @ApiOperation(value = "Client deleted", nickname = "delete", notes = "Delete an existing client", response = ClientDto.class, responseContainer = "List", tags={ "clients", })
+    @ApiOperation(value = "Client deleted", nickname = "delete", notes = "Delete an existing client", response = ClientDto.class, responseContainer = "List", tags = { "clients", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Client deleted", response = ClientDto.class, responseContainer = "List"),
         @ApiResponse(code = 400, message = "Bad request"),
@@ -77,7 +77,7 @@ public class ClientController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<Void>> deleteClient(@ApiParam(value = "" ,required=true )  @Valid @RequestBody ClientDto clientDto) {
+    Mono<ResponseEntity<Void>> deleteClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
         return clientService.deleteClient(clientDto)
                 .map(client -> ResponseEntity.ok().build());
     }
@@ -89,7 +89,7 @@ public class ClientController {
      *
      * @return A list of clients (status code 200)
      */
-    @ApiOperation(value = "Get all clients", nickname = "findAll", notes = "Use to request all clients", response = ClientDto.class, responseContainer = "List", tags={ "clients", })
+    @ApiOperation(value = "Get all clients", nickname = "findAll", notes = "Use to request all clients", response = ClientDto.class, responseContainer = "List", tags = { "clients", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "A list of clients", response = ClientDto.class, responseContainer = "List") })
     @GetMapping(
@@ -107,7 +107,8 @@ public class ClientController {
      * @return A list of clients (status code 200)
      *         or Not found (status code 404)
      */
-    @ApiOperation(value = "Get clients by ID list", nickname = "findAllByIdList", notes = "Use to request a list of clients by ID", response = ClientDto.class, responseContainer = "List", tags={ "clients", })
+    @ApiOperation(value = "Get clients by ID list", nickname = "findAllByIdList", notes = "Use to request a list of clients by ID",
+            response = ClientDto.class, responseContainer = "List", tags = { "clients", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "A list of clients", response = ClientDto.class, responseContainer = "List"),
         @ApiResponse(code = 404, message = "Not found") })
@@ -116,7 +117,7 @@ public class ClientController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<Flux<ClientDto>>> findAllByIdList(@ApiParam(value = "" ,required=true )  @Valid @RequestBody List<String> idList) {
+    Mono<ResponseEntity<Flux<ClientDto>>> findAllByIdList(@ApiParam(value = "", required = true)  @Valid @RequestBody List<String> idList) {
         return Mono.just(ResponseEntity.ok(clientService.findAllByIdList(idList)));
     }
 
@@ -128,7 +129,7 @@ public class ClientController {
      * @return A client (status code 200)
      *         or Not found (status code 404)
      */
-    @ApiOperation(value = "Get client by document number", nickname = "findByDocumentNumber", notes = "Use to request a client by document number", response = ClientDto.class, tags={ "clients", })
+    @ApiOperation(value = "Get client by document number", nickname = "findByDocumentNumber", notes = "Use to request a client by document number", response = ClientDto.class, tags = { "clients", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "A client", response = ClientDto.class),
         @ApiResponse(code = 404, message = "Not found") })
@@ -136,7 +137,7 @@ public class ClientController {
         value = "/findByDocumentNumber/{documentNumber}",
         produces = { "application/json" }
     )
-    Mono<ResponseEntity<ClientDto>> findByDocumentNumber(@ApiParam(value = "Document number of client to return",required=true) @PathVariable("documentNumber") String documentNumber) {
+    Mono<ResponseEntity<ClientDto>> findByDocumentNumber(@ApiParam(value = "Document number of client to return", required = true) @PathVariable("documentNumber") String documentNumber) {
         return clientService.findByDocumentNumber(documentNumber)
                 .map(client -> ResponseEntity.ok(client));
     }
@@ -149,7 +150,7 @@ public class ClientController {
      * @return A client (status code 200)
      *         or Not found (status code 404)
      */
-    @ApiOperation(value = "Get client by ID", nickname = "findById", notes = "Use to request a client by ID", response = ClientDto.class, tags={ "clients", })
+    @ApiOperation(value = "Get client by ID", nickname = "findById", notes = "Use to request a client by ID", response = ClientDto.class, tags = { "clients", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "A client", response = ClientDto.class),
         @ApiResponse(code = 404, message = "Not found") })
@@ -157,7 +158,7 @@ public class ClientController {
         value = "/{id}",
         produces = { "application/json" }
     )
-    Mono<ResponseEntity<ClientDto>> findById(@ApiParam(value = "ID of client to return",required=true) @PathVariable("id") String id) {
+    Mono<ResponseEntity<ClientDto>> findById(@ApiParam(value = "ID of client to return", required = true) @PathVariable("id") String id) {
         return clientService.findByDocumentNumber(id)
         .map(client -> ResponseEntity.ok(client));
     }
@@ -171,7 +172,7 @@ public class ClientController {
      *         or Bad request (status code 400)
      *         or Not found (status code 404)
      */
-    @ApiOperation(value = "Update an existing client", nickname = "update", notes = "Update a client", response = ClientDto.class, tags={ "clients", })
+    @ApiOperation(value = "Update an existing client", nickname = "update", notes = "Update a client", response = ClientDto.class, tags = { "clients", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Client updated", response = ClientDto.class),
         @ApiResponse(code = 400, message = "Bad request"),
@@ -180,7 +181,7 @@ public class ClientController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<ClientDto>> updateClient(@ApiParam(value = "" ,required=true )  @Valid @RequestBody ClientDto clientDto) {
+    Mono<ResponseEntity<ClientDto>> updateClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
         return clientService.updateClient(clientDto)
                 .map(client -> ResponseEntity.ok(client));
     }

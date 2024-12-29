@@ -19,7 +19,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Document(collection="authorized_signatories")
+@Document(collection = "authorized_signatories")
 public class AuthorizedSignatory implements Serializable {
     
     private static final long serialVersionUID = 1L;

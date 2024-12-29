@@ -36,4 +36,4 @@ public enum ClientTypeEnum {
       }
       throw new IllegalArgumentException("Unexpected value '" + value + "'");
     }
-  }
+}
