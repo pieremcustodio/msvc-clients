@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.piere.bootcamp.clients.model.enums.ClientTypeEnum;
+import com.piere.bootcamp.clients.model.enums.ProfileTypeEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,9 @@ public class Client implements Serializable {
 
     @Field(name = "client_type")
     private ClientTypeEnum clientType;
+
+    @Field(name = "profile_type")
+    private ProfileTypeEnum profileType;
 
     @Field(name = "person_id")
     private String personId;

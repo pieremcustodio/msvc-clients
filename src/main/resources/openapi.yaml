@@ -564,6 +564,13 @@ components:
             enum:
               - PERSONAL
               - EMPRESARIAL
+          profileType:
+            type: string
+            description: Profile type of the client
+            enum:
+              - NORMAL
+              - PYME
+              - VIP
           person:
             $ref: '#/components/schemas/PersonDto'
           legalRepresentatives:
