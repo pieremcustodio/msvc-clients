@@ -49,7 +49,7 @@ public class AuthorizedSignatoryController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 409, message = "already exists") })
     @PostMapping(produces = { "application/json" }, consumes = { "application/json" })
-    Mono<ResponseEntity<AuthorizedSignatoryDto>> createAuthorizedSignatory(
+    public Mono<ResponseEntity<AuthorizedSignatoryDto>> createAuthorizedSignatory(
             @ApiParam(value = "", required = true) @Valid @RequestBody AuthorizedSignatoryDto authorizedSignatoryDto) {
         return authorizedSignatoryService.createAuthorizedSignatory(authorizedSignatoryDto)
                 .map(authorizedSignatory -> ResponseEntity.created(URI.create("/api/authorizedsignatories"))
@@ -68,7 +68,7 @@ public class AuthorizedSignatoryController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Authorized signatory deleted", response = AuthorizedSignatoryDto.class, responseContainer = "List") })
     @DeleteMapping(produces = { "application/json" }, consumes = { "application/json" })
-    Mono<ResponseEntity<Void>> deleteAuthorizedSignatory(
+    public Mono<ResponseEntity<Void>> deleteAuthorizedSignatory(
             @ApiParam(value = "", required = true) @Valid @RequestBody AuthorizedSignatoryDto authorizedSignatoryDto) {
         return authorizedSignatoryService.deleteAuthorizedSignatory(authorizedSignatoryDto)
                 .map(authorizedSignatory -> ResponseEntity.ok().body(authorizedSignatory));
@@ -85,7 +85,7 @@ public class AuthorizedSignatoryController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "A list of authorized signatories", response = AuthorizedSignatoryDto.class, responseContainer = "List") })
     @GetMapping(produces = { "application/json" })
-    Mono<ResponseEntity<Flux<AuthorizedSignatoryDto>>> findAllAuthorizedSignatories() {
+    public Mono<ResponseEntity<Flux<AuthorizedSignatoryDto>>> findAllAuthorizedSignatories() {
         return Mono.just(ResponseEntity.ok().body(authorizedSignatoryService.findAllAuthorizedSignatories()));
     }
 
@@ -105,7 +105,7 @@ public class AuthorizedSignatoryController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 404, message = "Not found") })
     @PutMapping(produces = { "application/json" }, consumes = { "application/json" })
-    Mono<ResponseEntity<AuthorizedSignatoryDto>> updateAuthorizedSignatory(
+    public Mono<ResponseEntity<AuthorizedSignatoryDto>> updateAuthorizedSignatory(
             @ApiParam(value = "", required = true) @Valid @RequestBody AuthorizedSignatoryDto authorizedSignatoryDto) {
         return authorizedSignatoryService.updateAuthorizedSignatory(authorizedSignatoryDto)
                 .map(authorizedSignatory -> ResponseEntity.ok(authorizedSignatory));

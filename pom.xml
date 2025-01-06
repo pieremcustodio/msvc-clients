@@ -17,6 +17,12 @@
 		<java.version>11</java.version>
 		<jacoco.version>0.8.3</jacoco.version>
 		<spring-cloud.version>2021.0.9</spring-cloud.version>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.login>ed53b34f2399f67ea9f09a75700869d7c05b1963</sonar.login>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.language>java</sonar.language>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -64,6 +70,10 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

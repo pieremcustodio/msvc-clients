@@ -49,7 +49,7 @@ public class LegalRepresentativeController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<LegalRepresentativeDto>> createLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
+    public Mono<ResponseEntity<LegalRepresentativeDto>> createLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
         return legalRepresentativeService.createLegalRepresentative(legalRepresentativeDto)
                 .map(legalRepresentative -> ResponseEntity.created(URI.create("/api/legalrepresentatives/")).body(legalRepresentative));
     }
@@ -71,7 +71,7 @@ public class LegalRepresentativeController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<Void>> deleteLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
+    public Mono<ResponseEntity<Void>> deleteLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
         return legalRepresentativeService.deleteLegalRepresentative(legalRepresentativeDto)
                 .map(legalRepresentative -> ResponseEntity.ok().body(legalRepresentative));
     }
@@ -89,7 +89,7 @@ public class LegalRepresentativeController {
     @GetMapping(
         produces = { "application/json" }
     )
-    Mono<ResponseEntity<Flux<LegalRepresentativeDto>>> findAllLegalRepresentatives() {
+    public Mono<ResponseEntity<Flux<LegalRepresentativeDto>>> findAllLegalRepresentatives() {
         return Mono.just(ResponseEntity.ok().body(legalRepresentativeService.findAllLegalRepresentatives()));
     }
 
@@ -112,7 +112,7 @@ public class LegalRepresentativeController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<LegalRepresentativeDto>> updateLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
+    public Mono<ResponseEntity<LegalRepresentativeDto>> updateLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
         return legalRepresentativeService.updateLegalRepresentative(legalRepresentativeDto)
                 .map(legalRepresentative -> ResponseEntity.ok(legalRepresentative));
     }

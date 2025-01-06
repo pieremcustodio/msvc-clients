@@ -74,7 +74,7 @@ public class PersonController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<Void>> deletePerson(@ApiParam(value = "", required = true)  @Valid @RequestBody PersonDto personDto) {
+    public Mono<ResponseEntity<Void>> deletePerson(@ApiParam(value = "", required = true)  @Valid @RequestBody PersonDto personDto) {
         return personService.deletePerson(personDto)
                 .map(person -> ResponseEntity.ok().body(person));
     }
@@ -91,7 +91,7 @@ public class PersonController {
     @GetMapping(
         produces = { "application/json" }
     )
-    Mono<ResponseEntity<Flux<PersonDto>>> findAllPersons() {
+    public Mono<ResponseEntity<Flux<PersonDto>>> findAllPersons() {
         return Mono.just(ResponseEntity.ok().body(personService.findAllPersons()));
     }
 
@@ -113,7 +113,7 @@ public class PersonController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<PersonDto>> updatePerson(@ApiParam(value = "", required = true)  @Valid @RequestBody PersonDto personDto) {
+    public Mono<ResponseEntity<PersonDto>> updatePerson(@ApiParam(value = "", required = true)  @Valid @RequestBody PersonDto personDto) {
         return personService.updatePerson(personDto)
                 .map(person -> ResponseEntity.ok(person));
     }

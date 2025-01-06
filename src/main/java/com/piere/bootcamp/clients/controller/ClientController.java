@@ -53,7 +53,7 @@ public class ClientController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<ClientDto>> createClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
+    public Mono<ResponseEntity<ClientDto>> createClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
         return clientService.createClient(clientDto)
                 .map(client -> ResponseEntity.created(URI.create("/api/clients/")).body(client));
     }
@@ -77,7 +77,7 @@ public class ClientController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<Void>> deleteClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
+    public Mono<ResponseEntity<Void>> deleteClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
         return clientService.deleteClient(clientDto)
                 .map(client -> ResponseEntity.ok().build());
     }
@@ -95,7 +95,7 @@ public class ClientController {
     @GetMapping(
         produces = { "application/json" }
     )
-    Mono<ResponseEntity<Flux<ClientDto>>> findAllClients() {
+    public Mono<ResponseEntity<Flux<ClientDto>>> findAllClients() {
         return Mono.just(ResponseEntity.ok(clientService.findAllClients()));
     }
 
@@ -117,7 +117,7 @@ public class ClientController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<Flux<ClientDto>>> findAllByIdList(@ApiParam(value = "", required = true)  @Valid @RequestBody List<String> idList) {
+    public Mono<ResponseEntity<Flux<ClientDto>>> findAllByIdList(@ApiParam(value = "", required = true)  @Valid @RequestBody List<String> idList) {
         return Mono.just(ResponseEntity.ok(clientService.findAllByIdList(idList)));
     }
 
@@ -137,7 +137,7 @@ public class ClientController {
         value = "/findByDocumentNumber/{documentNumber}",
         produces = { "application/json" }
     )
-    Mono<ResponseEntity<ClientDto>> findByDocumentNumber(@ApiParam(value = "Document number of client to return", required = true) @PathVariable("documentNumber") String documentNumber) {
+    public Mono<ResponseEntity<ClientDto>> findByDocumentNumber(@ApiParam(value = "Document number of client to return", required = true) @PathVariable("documentNumber") String documentNumber) {
         return clientService.findByDocumentNumber(documentNumber)
                 .map(client -> ResponseEntity.ok(client));
     }
@@ -158,7 +158,7 @@ public class ClientController {
         value = "/{id}",
         produces = { "application/json" }
     )
-    Mono<ResponseEntity<ClientDto>> findById(@ApiParam(value = "ID of client to return", required = true) @PathVariable("id") String id) {
+    public Mono<ResponseEntity<ClientDto>> findById(@ApiParam(value = "ID of client to return", required = true) @PathVariable("id") String id) {
         return clientService.findByDocumentNumber(id)
         .map(client -> ResponseEntity.ok(client));
     }
@@ -181,7 +181,7 @@ public class ClientController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    Mono<ResponseEntity<ClientDto>> updateClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
+    public Mono<ResponseEntity<ClientDto>> updateClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
         return clientService.updateClient(clientDto)
                 .map(client -> ResponseEntity.ok(client));
     }

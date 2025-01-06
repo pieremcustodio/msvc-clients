@@ -3,9 +3,13 @@ package com.piere.bootcamp.clients.model.dto;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Response implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -14,16 +18,6 @@ public class Response implements Serializable {
     private String message;
     private Object data;
     private LocalDate date;
-
-    public Response() {
-    }
-
-    public Response(boolean success, String message, Object data, LocalDate date) {
-        this.success = success;
-        this.message = message;
-        this.data = data;
-        this.date = date;
-    }
 
     public static Response ok(String message, Object data) {
         return new Response(true, message, data, LocalDate.now());
