@@ -9,6 +9,6 @@ import reactor.core.publisher.Mono;
 
 public interface ClientDao extends ReactiveMongoRepository<Client, String> {
 
-    Mono<Client> findByPersonId(String id);
+    Mono<Client> findByDocumentNumber(String documentNumber);
 
 }

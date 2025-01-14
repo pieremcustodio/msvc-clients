@@ -2,6 +2,7 @@ package com.piere.bootcamp.clients.model.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.piere.bootcamp.clients.model.document.Client;
 import com.piere.bootcamp.clients.model.enums.ClientTypeEnum;
 
+import com.piere.bootcamp.clients.model.enums.DocumentTypeEnum;
+import com.piere.bootcamp.clients.model.enums.ProfileTypeEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,67 +38,101 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClientDto implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private String id;
+    private String id;
 
-  private ClientTypeEnum clientType;
+    private ClientTypeEnum clientType;
 
-  private PersonDto person;
+    private ProfileTypeEnum profileType;
 
-  private String personId;
+    private String name;
 
-  private List<String> legalRepresentativeIds;
+    private String lastName;
 
-  @ApiModelProperty(hidden = true)
-  @ToString.Exclude
-  @Builder.Default
-  private List<LegalRepresentativeDto> legalRepresentatives = null;
+    private String companyName;
 
-  private List<String> authorizedSignatoryIds;
+    private String email;
 
-  @ApiModelProperty(hidden = true)
-  @ToString.Exclude
-  @Builder.Default
-  private List<AuthorizedSignatoryDto> authorizedSignatories = null;
+    private String address;
 
-  @JsonSerialize(using = LocalDateSerializer.class)
-  @JsonDeserialize(using = LocalDateDeserializer.class)
-  private LocalDate createAt;
+    private String cellphone;
 
-  @JsonSerialize(using = LocalDateSerializer.class)
-  @JsonDeserialize(using = LocalDateDeserializer.class)
-  private LocalDate endAt;
+    private String phone;
 
-  private Boolean status;
+    private DocumentTypeEnum documentType;
 
-  public static ClientDto build() {
-    return ClientDto.builder().build();
-  }
+    private String documentNumber;
 
-  public ClientDto toDto(Client client) {
-    return ClientDto.builder()
-      .id(client.getId())
-      .clientType(client.getClientType())
-      .personId(client.getPersonId())
-      .legalRepresentativeIds(client.getLegalRepresentativeIds())
-      .authorizedSignatoryIds(client.getAuthorizedSignatoryIds())
-      .createAt(client.getCreateAt())
-      .endAt(client.getEndAt())
-      .status(client.getStatus())
-      .build();
-  }
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate birthDate;
 
-  public Client toEntity(ClientDto clientDto) {
-    return Client.builder()
-      .id(clientDto.getId())
-      .clientType(clientDto.getClientType())
-      .personId(clientDto.getPerson().getId())
-      .legalRepresentativeIds(clientDto.getLegalRepresentatives().stream().map(LegalRepresentativeDto::getId).collect(Collectors.toList()))
-      .authorizedSignatoryIds(clientDto.getAuthorizedSignatories().stream().map(AuthorizedSignatoryDto::getId).collect(Collectors.toList()))
-      .createAt(clientDto.getCreateAt())
-      .endAt(clientDto.getEndAt())
-      .status(clientDto.getStatus())
-      .build();
-  }
+    private List<String> legalRepresentativeIds;
+
+    @ApiModelProperty(hidden = true)
+    @ToString.Exclude
+    @Builder.Default
+    private List<LegalRepresentativeDto> legalRepresentatives = null;
+
+    private List<String> authorizedSignatoryIds;
+
+    @ApiModelProperty(hidden = true)
+    @ToString.Exclude
+    @Builder.Default
+    private List<AuthorizedSignatoryDto> authorizedSignatories = null;
+
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate createAt;
+
+    private Boolean status;
+
+    public static ClientDto build() {
+        return ClientDto.builder().build();
+    }
+
+    public ClientDto toDto(Client entity) {
+        return ClientDto.builder()
+                .id(entity.getId())
+                .clientType(entity.getClientType())
+                .profileType(entity.getProfileType())
+                .name(entity.getName())
+                .lastName(entity.getLastName())
+                .companyName(entity.getCompanyName())
+                .email(entity.getEmail())
+                .address(entity.getAddress())
+                .cellphone(entity.getCellphone())
+                .phone(entity.getPhone())
+                .documentType(entity.getDocumentType())
+                .documentNumber(entity.getDocumentNumber())
+                .birthDate(entity.getBirthDate())
+                .legalRepresentativeIds(entity.getLegalRepresentativeIds() != null ? new ArrayList<>() : entity.getLegalRepresentativeIds())
+                .authorizedSignatoryIds(entity.getAuthorizedSignatoryIds() != null ? new ArrayList<>() : entity.getAuthorizedSignatoryIds())
+                .createAt(entity.getCreateAt())
+                .status(entity.getStatus()).build();
+    }
+
+    public Client toEntity(ClientDto dto) {
+        return Client.builder()
+                .id(dto.getId())
+                .clientType(dto.getClientType())
+                .profileType(dto.getProfileType())
+                .name(dto.getName())
+                .lastName(dto.getLastName())
+                .companyName(dto.getCompanyName())
+                .email(dto.getEmail())
+                .address(dto.getAddress())
+                .cellphone(dto.getCellphone())
+                .phone(dto.getPhone())
+                .documentType(dto.getDocumentType())
+                .documentNumber(dto.getDocumentNumber())
+                .birthDate(dto.getBirthDate())
+                .legalRepresentativeIds(dto.getLegalRepresentatives() != null ? dto.getLegalRepresentatives().stream()
+                        .map(LegalRepresentativeDto::getId).collect(Collectors.toList()) : new ArrayList<>())
+                .authorizedSignatoryIds(dto.getAuthorizedSignatories() != null ? dto.getAuthorizedSignatories().stream()
+                        .map(AuthorizedSignatoryDto::getId).collect(Collectors.toList()) : new ArrayList<>())
+                .createAt(dto.getCreateAt())
+                .status(dto.getStatus()).build();
+    }
 }

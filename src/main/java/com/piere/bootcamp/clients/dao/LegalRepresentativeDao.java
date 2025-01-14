@@ -8,6 +8,6 @@ import reactor.core.publisher.Mono;
 
 public interface LegalRepresentativeDao extends ReactiveMongoRepository<LegalRepresentative, String> {
 
-    Mono<LegalRepresentative> findByPersonId(String id);
+    Mono<LegalRepresentative> findByDocumentNumber(String documentNumber);
     
 }

@@ -1,19 +1,13 @@
 package com.piere.bootcamp.clients.controller;
 
-import java.net.URI;
 
 import javax.validation.Valid;
 
+import com.piere.bootcamp.clients.model.dto.BankResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.piere.bootcamp.clients.model.dto.LegalRepresentativeDto;
 import com.piere.bootcamp.clients.service.LegalRepresentativeService;
@@ -22,7 +16,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @CrossOrigin
@@ -32,89 +25,99 @@ public class LegalRepresentativeController {
 
     @Autowired
     private LegalRepresentativeService legalRepresentativeService;
-    
-    
+
+
     /**
-     * POST /api/legal-representantives : Create legal representative
-     * Create a new legal representative
+     * POST /api/legal-representatives : Crear representante legal
+     * Crear un nuevo representante legal
      *
      * @param legalRepresentativeDto  (required)
-     * @return Legal representative created (status code 201)
-     *         or Bad request (status code 400)
-     *         or already exists (status code 409)
+     * @return Representante legal creado correctamente (status code 201)
+     *         or Solicitud mal formada (status code 400)
+     *         or Recurso ya existente (status code 409)
      */
-    @ApiOperation(value = "Create legal representative", nickname = "createLegalRepresentative", notes = "Create a new legal representative",
-            response = LegalRepresentativeDto.class, tags = { "legalRepresentatives", })
+    @ApiOperation(value = "Crear representante legal", nickname = "createLegalRepresentative",
+            notes = "Crear un nuevo representante legal", response = BankResponse.class, tags = { "legalRepresentatives", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Representante legal creado correctamente", response = BankResponse.class),
+            @ApiResponse(code = 400, message = "Solicitud mal formada", response = BankResponse.class),
+            @ApiResponse(code = 409, message = "Recurso ya existente", response = BankResponse.class) })
     @PostMapping(
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            produces = { "application/json" },
+            consumes = { "application/json" }
     )
-    public Mono<ResponseEntity<LegalRepresentativeDto>> createLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
+    public Mono<ResponseEntity<BankResponse>> createLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
         return legalRepresentativeService.createLegalRepresentative(legalRepresentativeDto)
-                .map(legalRepresentative -> ResponseEntity.created(URI.create("/api/legalrepresentatives/")).body(legalRepresentative));
+                .map(legalRepresentative -> ResponseEntity.status(HttpStatus.CREATED).body(BankResponse.ok("Representante legal creado correctamente", legalRepresentative)));
     }
 
     /**
-     * DELETE /api/legal-representantives : Legal representative deleted
-     * Delete an existing legal representative
+     * DELETE /api/legal-representatives : Eliminar representante legal
+     * Eliminar un representante legal existente
      *
-     * @param legalRepresentativeDto  (required)
-     * @return Legal representative deleted (status code 200)
-     *         or Bad request (status code 400)
+     * @param id ID del representante legal a eliminar (required)
+     * @return Representante legal eliminado correctamente (status code 200)
+     *         or Solicitud mal formada (status code 400)
+     *         or Recurso no encontrado (status code 404)
      */
-    @ApiOperation(value = "Legal representative deleted", nickname = "deleteLegalRepresentative", notes = "Delete an existing legal representative",
-            response = LegalRepresentativeDto.class, responseContainer = "List", tags = { "legalRepresentatives", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Legal representative deleted", response = LegalRepresentativeDto.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad request") })
+    @ApiOperation(value = "Eliminar representante legal", nickname = "deleteLegalRepresentative",
+            notes = "Eliminar un representante legal existente", response = BankResponse.class, tags = { "legalRepresentatives", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Representante legal eliminado correctamente", response = BankResponse.class),
+            @ApiResponse(code = 400, message = "Solicitud mal formada", response = BankResponse.class),
+            @ApiResponse(code = 404, message = "Recurso no encontrado", response = BankResponse.class) })
     @DeleteMapping(
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            value = "/{id}",
+            produces = { "application/json" }
     )
-    public Mono<ResponseEntity<Void>> deleteLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
-        return legalRepresentativeService.deleteLegalRepresentative(legalRepresentativeDto)
-                .map(legalRepresentative -> ResponseEntity.ok().body(legalRepresentative));
+    public Mono<ResponseEntity<BankResponse>> deleteLegalRepresentative(@PathVariable("id") String id) {
+        return legalRepresentativeService.deleteLegalRepresentativeById(id)
+                .then(Mono.just(ResponseEntity.ok(
+                        BankResponse.ok("Representante legal eliminado correctamente", null)
+                )));
     }
 
     /**
-     * GET /api/legal-representantives : Get all legal representatives
-     * Use to request all legal representatives
+     * GET /api/legal-representatives : Buscar representantes legales
+     * Buscar todos los representantes legales
      *
-     * @return A list of legal representatives (status code 200)
+     * @return Lista de representantes legales (status code 200)
      */
-    @ApiOperation(value = "Get all legal representatives", nickname = "findAllLegalRepresentatives", notes = "Use to request all legal representatives",
-            response = LegalRepresentativeDto.class, responseContainer = "List", tags = { "legalRepresentatives", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "A list of legal representatives", response = LegalRepresentativeDto.class, responseContainer = "List") })
+    @ApiOperation(value = "Buscar representantes legales", nickname = "findAllLegalRepresentatives",
+            notes = "Buscar todos los representantes legales", response = BankResponse.class, tags = { "legalRepresentatives", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Lista de representantes legales", response = BankResponse.class) })
     @GetMapping(
-        produces = { "application/json" }
+            produces = { "application/json" }
     )
-    public Mono<ResponseEntity<Flux<LegalRepresentativeDto>>> findAllLegalRepresentatives() {
-        return Mono.just(ResponseEntity.ok().body(legalRepresentativeService.findAllLegalRepresentatives()));
+    public Mono<ResponseEntity<BankResponse>> findAllLegalRepresentatives() {
+        return legalRepresentativeService.findAllLegalRepresentatives()
+                .collectList()
+                .map(legalRepresentatives -> ResponseEntity.ok(BankResponse.ok("Lista de representantes legales", legalRepresentatives)));
     }
 
     /**
-     * PUT /api/legal-representantives : Update an existing legal representative
-     * Update a legal representative
+     * PUT /api/legal-representatives : Actualizar representante legal
+     * Actualizar un representante legal existente
      *
      * @param legalRepresentativeDto  (required)
-     * @return Legal representative updated (status code 200)
-     *         or Bad request (status code 400)
-     *         or Not found (status code 404)
+     * @return Representante legal actualizado correctamente (status code 200)
+     *         or Solicitud mal formada (status code 400)
+     *         or Recurso no encontrado (status code 404)
      */
-    @ApiOperation(value = "Update an existing legal representative", nickname = "updateLegalRepresentative", notes = "Update a legal representative",
-            response = LegalRepresentativeDto.class, tags = { "legalRepresentatives", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Legal representative updated", response = LegalRepresentativeDto.class),
-        @ApiResponse(code = 400, message = "Bad request"),
-        @ApiResponse(code = 404, message = "Not found") })
+    @ApiOperation(value = "Actualizar representante legal", nickname = "updateLegalRepresentative",
+            notes = "Actualizar un representante legal existente", response = BankResponse.class, tags = { "legalRepresentatives", })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Representante legal actualizado correctamente", response = BankResponse.class),
+            @ApiResponse(code = 400, message = "Solicitud mal formada", response = BankResponse.class),
+            @ApiResponse(code = 404, message = "Recurso no encontrado", response = BankResponse.class) })
     @PutMapping(
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            produces = { "application/json" },
+            consumes = { "application/json" }
     )
-    public Mono<ResponseEntity<LegalRepresentativeDto>> updateLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
+    public Mono<ResponseEntity<BankResponse>> updateLegalRepresentative(@ApiParam(value = "", required = true)  @Valid @RequestBody LegalRepresentativeDto legalRepresentativeDto) {
         return legalRepresentativeService.updateLegalRepresentative(legalRepresentativeDto)
-                .map(legalRepresentative -> ResponseEntity.ok(legalRepresentative));
+                .map(legalRepresentative -> ResponseEntity.ok(BankResponse.ok("Representante legal actualizado correctamente", legalRepresentative)));
     }
 
     

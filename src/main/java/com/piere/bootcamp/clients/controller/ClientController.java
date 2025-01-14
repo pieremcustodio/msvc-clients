@@ -1,11 +1,11 @@
 package com.piere.bootcamp.clients.controller;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.piere.bootcamp.clients.model.dto.BankResponse;
 import com.piere.bootcamp.clients.model.dto.ClientDto;
 import com.piere.bootcamp.clients.service.ClientService;
 
@@ -24,165 +25,178 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import reactor.core.publisher.Flux;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api/clients")
+@Slf4j
 public class ClientController {
 
     @Autowired
     private ClientService clientService;
 
     /**
-     * POST /api/clients : Create client
-     * Create a new client
+     * POST /api/clients : Crear un nuevo cliente
+     * Crear cliente
      *
      * @param clientDto  (required)
-     * @return Client created (status code 201)
-     *         or Bad request (status code 400)
-     *         or already exists (status code 409)
+     * @return Cliente creado correctamente (status code 201)
+     *         or Solicitud mal formada (status code 400)
+     *         or Recurso ya existente (status code 409)
      */
-    @ApiOperation(value = "Create client", nickname = "create", notes = "Create a new client", response = ClientDto.class, tags = { "clients", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Client created", response = ClientDto.class),
-        @ApiResponse(code = 400, message = "Bad request"),
-        @ApiResponse(code = 409, message = "already exists") })
+    @ApiOperation(value = "Crear un nuevo cliente", nickname = "createClient",
+            notes = "Crear cliente", response = BankResponse.class, tags = { "clients" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Cliente creado correctamente", response = BankResponse.class),
+            @ApiResponse(code = 400, message = "Solicitud mal formada", response = BankResponse.class),
+            @ApiResponse(code = 409, message = "Recurso ya existente", response = BankResponse.class) })
     @PostMapping(
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            produces = { "application/json" },
+            consumes = { "application/json" }
     )
-    public Mono<ResponseEntity<ClientDto>> createClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
+    public Mono<ResponseEntity<BankResponse>> createClient(@ApiParam(value = "", required = true) @Valid @RequestBody ClientDto clientDto) {
         return clientService.createClient(clientDto)
-                .map(client -> ResponseEntity.created(URI.create("/api/clients/")).body(client));
+                .map(client -> ResponseEntity.status(HttpStatus.CREATED).body(BankResponse.ok("Cliente creado correctamente", client)))
+                .doOnError(error -> log.error(error.getMessage()));
     }
 
 
     /**
-     * DELETE /api/clients : Client deleted
-     * Delete an existing client
+     * DELETE /api/clients : Eliminar cliente
+     * Eliminar un cliente existente
      *
-     * @param clientDto  (required)
-     * @return Client deleted (status code 200)
-     *         or Bad request (status code 400)
-     *         or Not found (status code 404)
+     * @param id ID del cliente (required)
+     * @return Cliente eliminado correctamente (status code 200)
+     *         or Solicitud mal formada (status code 400)
+     *         or Recurso no encontrado (status code 404)
      */
-    @ApiOperation(value = "Client deleted", nickname = "delete", notes = "Delete an existing client", response = ClientDto.class, responseContainer = "List", tags = { "clients", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Client deleted", response = ClientDto.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad request"),
-        @ApiResponse(code = 404, message = "Not found") })
+    @ApiOperation(value = "Eliminar cliente", nickname = "deleteClient",
+            notes = "Eliminar un cliente existente", response = BankResponse.class, tags = { "clients" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Cliente eliminado correctamente", response = BankResponse.class),
+            @ApiResponse(code = 400, message = "Solicitud mal formada", response = BankResponse.class),
+            @ApiResponse(code = 404, message = "Recurso no encontrado", response = BankResponse.class) })
     @DeleteMapping(
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            value = "/{id}",
+            produces = { "application/json" }
     )
-    public Mono<ResponseEntity<Void>> deleteClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
-        return clientService.deleteClient(clientDto)
-                .map(client -> ResponseEntity.ok().build());
+    public Mono<ResponseEntity<BankResponse>> deleteClient(@ApiParam(value = "ID del cliente", required = true) @PathVariable("id") String id) {
+        return clientService.deleteClientById(id)
+                .then(Mono.just(ResponseEntity.ok(BankResponse.ok("Cliente eliminado correctamente", null))));
     }
 
 
     /**
-     * GET /api/clients : Get all clients
-     * Use to request all clients
+     * GET /api/clients : Buscar todos los clientes
+     * Buscar todos los clientes
      *
-     * @return A list of clients (status code 200)
+     * @return Listado de clientes (status code 200)
      */
-    @ApiOperation(value = "Get all clients", nickname = "findAll", notes = "Use to request all clients", response = ClientDto.class, responseContainer = "List", tags = { "clients", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "A list of clients", response = ClientDto.class, responseContainer = "List") })
+    @ApiOperation(value = "Buscar todos los clientes", nickname = "findAllClients",
+            notes = "Buscar todos los clientes", response = BankResponse.class, responseContainer = "List", tags = { "clients" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Listado de clientes", response = BankResponse.class, responseContainer = "List") })
     @GetMapping(
-        produces = { "application/json" }
+            produces = { "application/json" }
     )
-    public Mono<ResponseEntity<Flux<ClientDto>>> findAllClients() {
-        return Mono.just(ResponseEntity.ok(clientService.findAllClients()));
+    public Mono<ResponseEntity<BankResponse>> findAllClients() {
+        return clientService.findAllClients()
+                .collectList()
+                .map(clientList -> ResponseEntity.ok(BankResponse.ok("Listado de clientes", clientList)));
     }
 
     /**
-     * POST /api/clients/findAllByIdList : Get clients by ID list
-     * Use to request a list of clients by ID
+     * POST /api/clients/findAllByIdList : Busqueda de clientes por lista de IDs
+     * Busqueda de clientes por lista de IDs
      *
-     * @param requestBody  (required)
+     * @param idList  (required)
      * @return A list of clients (status code 200)
-     *         or Not found (status code 404)
+     *         or Recurso no encontrado (status code 404)
      */
-    @ApiOperation(value = "Get clients by ID list", nickname = "findAllByIdList", notes = "Use to request a list of clients by ID",
-            response = ClientDto.class, responseContainer = "List", tags = { "clients", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "A list of clients", response = ClientDto.class, responseContainer = "List"),
-        @ApiResponse(code = 404, message = "Not found") })
+    @ApiOperation(value = "Busqueda de clientes por lista de IDs", nickname = "findAllByIdList",
+            notes = "Busqueda de clientes por lista de IDs", response = BankResponse.class, responseContainer = "List", tags = { "clients" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "A list of clients", response = BankResponse.class, responseContainer = "List"),
+            @ApiResponse(code = 404, message = "Recurso no encontrado", response = BankResponse.class) })
     @PostMapping(
-        value = "/findAllByIdList",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            value = "/findAllByIdList",
+            produces = { "application/json" },
+            consumes = { "application/json" }
     )
-    public Mono<ResponseEntity<Flux<ClientDto>>> findAllByIdList(@ApiParam(value = "", required = true)  @Valid @RequestBody List<String> idList) {
-        return Mono.just(ResponseEntity.ok(clientService.findAllByIdList(idList)));
+    public Mono<ResponseEntity<BankResponse>> findAllByIdList(@ApiParam(value = "", required = true) @Valid @RequestBody List<String> idList) {
+        return clientService.findAllByIdList(idList)
+                .collectList()
+                .map(clientList -> ResponseEntity.ok(BankResponse.ok("Listado de clientes por lista de IDs", clientList)));
     }
 
     /**
-     * GET /api/clients/findByDocumentNumber/{documentNumber} : Get client by document number
-     * Use to request a client by document number
+     * GET /api/clients/findByDocumentNumber/{documentNumber} : Búsqueda de cliente por número de documento
+     * Búsqueda de cliente por número de documento
      *
-     * @param documentNumber Document number of client to return (required)
-     * @return A client (status code 200)
-     *         or Not found (status code 404)
+     * @param documentNumber Número de documento del cliente a buscar (required)
+     * @return Obtener cliente por número de documento (status code 200)
+     *         or Recurso no encontrado (status code 404)
      */
-    @ApiOperation(value = "Get client by document number", nickname = "findByDocumentNumber", notes = "Use to request a client by document number", response = ClientDto.class, tags = { "clients", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "A client", response = ClientDto.class),
-        @ApiResponse(code = 404, message = "Not found") })
+    @ApiOperation(value = "Búsqueda de cliente por número de documento", nickname = "findByDocumentNumber",
+            notes = "Búsqueda de cliente por número de documento", response = BankResponse.class, tags = { "clients" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Obtener cliente por número de documento", response = BankResponse.class),
+            @ApiResponse(code = 404, message = "Recurso no encontrado", response = BankResponse.class) })
     @GetMapping(
-        value = "/findByDocumentNumber/{documentNumber}",
-        produces = { "application/json" }
+            value = "/findByDocumentNumber/{documentNumber}",
+            produces = { "application/json" }
     )
-    public Mono<ResponseEntity<ClientDto>> findByDocumentNumber(@ApiParam(value = "Document number of client to return", required = true) @PathVariable("documentNumber") String documentNumber) {
+    public Mono<ResponseEntity<BankResponse>> findByDocumentNumber(@ApiParam(value = "Número de documento del cliente a buscar", required = true)
+                                                                   @PathVariable("documentNumber") String documentNumber) {
         return clientService.findByDocumentNumber(documentNumber)
-                .map(client -> ResponseEntity.ok(client));
+                .map(client -> ResponseEntity.ok(BankResponse.ok("Obtener cliente por número de documento", client)));
     }
 
     /**
-     * GET /api/clients/{id} : Get client by ID
-     * Use to request a client by ID
+     * GET /api/clients/{id} : Buscar cliente por ID
+     * Buscar cliente por ID
      *
-     * @param id ID of client to return (required)
-     * @return A client (status code 200)
-     *         or Not found (status code 404)
+     * @param id ID del cliente a retornar (required)
+     * @return Obtener cliente por ID (status code 200)
+     *         or Recurso no encontrado (status code 404)
      */
-    @ApiOperation(value = "Get client by ID", nickname = "findById", notes = "Use to request a client by ID", response = ClientDto.class, tags = { "clients", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "A client", response = ClientDto.class),
-        @ApiResponse(code = 404, message = "Not found") })
+    @ApiOperation(value = "Buscar cliente por ID", nickname = "findById",
+            notes = "Buscar cliente por ID", response = BankResponse.class, tags = { "clients" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Obtener cliente por ID", response = BankResponse.class),
+            @ApiResponse(code = 404, message = "Recurso no encontrado", response = BankResponse.class) })
     @GetMapping(
-        value = "/{id}",
-        produces = { "application/json" }
+            value = "/{id}",
+            produces = { "application/json" }
     )
-    public Mono<ResponseEntity<ClientDto>> findById(@ApiParam(value = "ID of client to return", required = true) @PathVariable("id") String id) {
-        return clientService.findByDocumentNumber(id)
-        .map(client -> ResponseEntity.ok(client));
+    public Mono<ResponseEntity<BankResponse>> findById(@ApiParam(value = "ID of client to return", required = true) @PathVariable("id") String id) {
+        return clientService.findById(id)
+                .map(client -> ResponseEntity.ok(BankResponse.ok("Obtener cliente por ID", client)));
     }
 
     /**
-     * PUT /api/clients : Update an existing client
-     * Update a client
+     * PUT /api/clients : Actualizar un cliente existente
+     * Actualizar un cliente
      *
      * @param clientDto  (required)
-     * @return Client updated (status code 200)
-     *         or Bad request (status code 400)
-     *         or Not found (status code 404)
+     * @return Cliente actualizado correctamente (status code 200)
+     *         or Solicitud mal formada (status code 400)
+     *         or Recurso no encontrado (status code 404)
      */
-    @ApiOperation(value = "Update an existing client", nickname = "update", notes = "Update a client", response = ClientDto.class, tags = { "clients", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Client updated", response = ClientDto.class),
-        @ApiResponse(code = 400, message = "Bad request"),
-        @ApiResponse(code = 404, message = "Not found") })
+    @ApiOperation(value = "Actualizar un cliente existente", nickname = "updateClient",
+            notes = "Actualizar un cliente", response = BankResponse.class, tags = { "clients" })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Cliente actualizado correctamente", response = BankResponse.class),
+            @ApiResponse(code = 400, message = "Solicitud mal formada", response = BankResponse.class),
+            @ApiResponse(code = 404, message = "Recurso no encontrado", response = BankResponse.class) })
     @PutMapping(
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            produces = { "application/json" },
+            consumes = { "application/json" }
     )
-    public Mono<ResponseEntity<ClientDto>> updateClient(@ApiParam(value = "", required = true)  @Valid @RequestBody ClientDto clientDto) {
+    public Mono<ResponseEntity<BankResponse>> updateClient(@ApiParam(value = "", required = true) @Valid @RequestBody ClientDto clientDto) {
         return clientService.updateClient(clientDto)
-                .map(client -> ResponseEntity.ok(client));
+                .map(client -> ResponseEntity.ok(BankResponse.ok("Cliente actualizado correctamente", client)));
     }
 }

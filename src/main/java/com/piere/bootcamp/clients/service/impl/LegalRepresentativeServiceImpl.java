@@ -3,15 +3,14 @@ package com.piere.bootcamp.clients.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.piere.bootcamp.clients.exception.BankException;
+import com.piere.bootcamp.clients.model.enums.TypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.piere.bootcamp.clients.dao.LegalRepresentativeDao;
-import com.piere.bootcamp.clients.model.document.LegalRepresentative;
 import com.piere.bootcamp.clients.model.dto.LegalRepresentativeDto;
-import com.piere.bootcamp.clients.model.dto.PersonDto;
 import com.piere.bootcamp.clients.service.LegalRepresentativeService;
-import com.piere.bootcamp.clients.service.PersonService;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,38 +21,27 @@ public class LegalRepresentativeServiceImpl implements LegalRepresentativeServic
     @Autowired
     private LegalRepresentativeDao legalRepresentativeDao;
 
-    @Autowired
-    private PersonService personService;
-
     @Override
     public Mono<LegalRepresentativeDto> createLegalRepresentative(LegalRepresentativeDto legalRepresentative) {
-        return this.findByDocumentNumber(legalRepresentative.getPerson().getDocumentNumber())
-                .flatMap(existingLegalRepresentative -> {
-                    if (existingLegalRepresentative == null) {
-                        Mono<PersonDto> person = personService.createPerson(legalRepresentative.getPerson());
-                        return person.flatMap(p -> legalRepresentativeDao.save(LegalRepresentative.builder()
-                                .personId(p.getId())
-                                .status(legalRepresentative.getStatus())
-                                .build()))
-                                .map(LegalRepresentativeDto.build()::toDto);
-                    } else {
-                        return Mono.error(new IllegalArgumentException("Legal representative already exists"));
-                    }
-                });
+        return this.findByDocumentNumber(legalRepresentative.getDocumentNumber())
+                .flatMap(existing -> Mono.<LegalRepresentativeDto>error(new BankException("El representante legal ya existe", TypeException.E)))
+                .switchIfEmpty(createNewLegalRepresentative(legalRepresentative));
     }
 
     @Override
     public Mono<LegalRepresentativeDto> updateLegalRepresentative(LegalRepresentativeDto legalRepresentative) {
-        return personService.updatePerson(legalRepresentative.getPerson())
-                .flatMap(person -> legalRepresentativeDao
-                        .save(LegalRepresentativeDto.build().toEntity(legalRepresentative)))
-                .map(LegalRepresentativeDto.build()::toDto);
+        return this.findByDocumentNumber(legalRepresentative.getDocumentNumber())
+                .switchIfEmpty(Mono.error(new BankException("El representante legal no existe", TypeException.E)))
+                .flatMap(existing -> Mono.just(LegalRepresentativeDto.build().toEntity(legalRepresentative)))
+                .flatMap(legalRepresentativeDao::save)
+                .flatMap(save -> Mono.just(LegalRepresentativeDto.build().toDto(save)));
     }
 
     @Override
-    public Mono<Void> deleteLegalRepresentative(LegalRepresentativeDto legalRepresentative) {
-        return personService.deletePerson(legalRepresentative.getPerson())
-                .then(legalRepresentativeDao.delete(LegalRepresentativeDto.build().toEntity(legalRepresentative)));
+    public Mono<Void> deleteLegalRepresentativeById(String id) {
+        return legalRepresentativeDao.findById(id)
+                .switchIfEmpty(Mono.error(new BankException("El representante legal no existe", TypeException.E)))
+                .flatMap(legalRepresentativeDao::delete);
 
     }
 
@@ -65,35 +53,27 @@ public class LegalRepresentativeServiceImpl implements LegalRepresentativeServic
 
     @Override
     public Mono<LegalRepresentativeDto> findByDocumentNumber(String documentNumber) {
-        return personService.findByDocumentNumber(documentNumber)
+        return legalRepresentativeDao.findByDocumentNumber(documentNumber)
                 .switchIfEmpty(Mono.empty())
-                .flatMap(person -> legalRepresentativeDao.findByPersonId(person.getId()))
                 .map(LegalRepresentativeDto.build()::toDto);
     }
 
     @Override
     public Flux<LegalRepresentativeDto> createLegalRepresentatives(List<LegalRepresentativeDto> legalRepresentatives) {
-        return personService.createPersons(legalRepresentatives.stream()
-                .map(LegalRepresentativeDto::getPerson)
+        return legalRepresentativeDao.saveAll(legalRepresentatives.stream()
+                .map(LegalRepresentativeDto.build()::toEntity)
                 .collect(Collectors.toList()))
-                .collectList()
-                .flatMapMany(persons -> {
-                    legalRepresentatives.forEach(legalRepresentative -> {
-                        persons.stream()
-                                .filter(person -> person.getDocumentNumber()
-                                        .equals(legalRepresentative.getPerson().getDocumentNumber()))
-                                .findFirst()
-                                .ifPresent(legalRepresentative::setPerson);
-                    });
+                .map(LegalRepresentativeDto.build()::toDto);
+    }
 
-                    List<LegalRepresentative> legalRepresentativeEntities = legalRepresentatives.stream()
-                            .map(legalRepresentative -> LegalRepresentative.builder()
-                                    .personId(legalRepresentative.getPerson().getId())
-                                    .status(legalRepresentative.getStatus())
-                                    .build())
-                            .collect(Collectors.toList());
-                    return legalRepresentativeDao.saveAll(legalRepresentativeEntities)
-                            .map(LegalRepresentativeDto.build()::toDto);
-                });
-    };
+    @Override
+    public Flux<LegalRepresentativeDto> findAllByIdList(List<String> idList) {
+        return legalRepresentativeDao.findAllById(idList)
+                .map(LegalRepresentativeDto.build()::toDto);
+    }
+
+    private Mono<LegalRepresentativeDto> createNewLegalRepresentative(LegalRepresentativeDto dto) {
+        return legalRepresentativeDao.save(LegalRepresentativeDto.build().toEntity(dto))
+                .map(LegalRepresentativeDto.build()::toDto);
+    }
 }

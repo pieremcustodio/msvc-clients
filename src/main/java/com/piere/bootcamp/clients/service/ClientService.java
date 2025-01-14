@@ -11,7 +11,7 @@ public interface ClientService {
     
     Mono<ClientDto> createClient(ClientDto client);
 
-    Mono<Void> deleteClient(ClientDto client);
+    Mono<Void> deleteClientById(String id);
 
     Mono<ClientDto> updateClient(ClientDto client);
 

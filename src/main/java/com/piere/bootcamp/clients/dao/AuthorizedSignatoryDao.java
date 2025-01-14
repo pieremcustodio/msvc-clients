@@ -8,6 +8,8 @@ import reactor.core.publisher.Mono;
 
 public interface AuthorizedSignatoryDao extends ReactiveMongoRepository<AuthorizedSignatory, String> {
 
-    Mono<AuthorizedSignatory> findByPersonId(String id);
+    Mono<AuthorizedSignatory> findByDocumentNumber(String documentNumber);
+
+    Mono<AuthorizedSignatory> findById(String id);
     
 }

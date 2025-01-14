@@ -13,12 +13,14 @@ public interface LegalRepresentativeService {
 
     Mono<LegalRepresentativeDto> updateLegalRepresentative(LegalRepresentativeDto legalRepresentative);
 
-    Mono<Void> deleteLegalRepresentative(LegalRepresentativeDto legalRepresentative);
+    Mono<Void> deleteLegalRepresentativeById(String id);
 
     Mono<LegalRepresentativeDto> findByDocumentNumber(String documentNumber);
 
     Flux<LegalRepresentativeDto> findAllLegalRepresentatives();
 
     Flux<LegalRepresentativeDto> createLegalRepresentatives(List<LegalRepresentativeDto> legalRepresentatives);
+
+    Flux<LegalRepresentativeDto> findAllByIdList(List<String> idList);
 
 }

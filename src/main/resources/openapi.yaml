@@ -1,30 +1,28 @@
 openapi: "3.0.1"
 info:
-  title: Client Service API
-  description: API to manage clients
+  title: API de Microservicio de Clientes
+  description: API para la gestión de clientes y sus datos asociados
   version: "1.0.0"
   contact:
     name: Piere Custodio
     email: piere_07@hotmail.com
 servers:
   - url: http://localhost:8081
-    description: Local server
+    description: Servidor local
 tags:
   - name: clients
-    description: Operations about clients
-  - name: persons
-    description: Operations about persons
+    description: Operaciones relacionadas con la gestión de clientes
   - name: legalRepresentatives
-    description: Operations about legal representatives
+    description: Operaciones relacionadas con los representantes legales
   - name: authorizedSignatories
-    description: Operations about authorized signatories
+    description: Operaciones relacionadas con los firmantes autorizados
 paths:
   /api/clients:
     post:
       tags:
         - clients
-      description: Create a new client
-      summary: Create client
+      description: Crear cliente
+      summary: Crear un nuevo cliente
       operationId: createClient
       requestBody:
         required: true
@@ -34,11 +32,11 @@ paths:
               $ref: '#/components/schemas/ClientDto'
       responses:
         '201':
-          description: Client created
+          description: Cliente creado correctamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClientDto'
+                $ref: '#/components/schemas/BankResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '409':
@@ -47,8 +45,8 @@ paths:
     put:
       tags:
         - clients
-      summary: Update an existing client
-      description: Update a client
+      summary: Actualizar un cliente existente
+      description: Actualizar un cliente
       operationId: updateClient
       requestBody:
         required: true
@@ -58,11 +56,11 @@ paths:
               $ref: '#/components/schemas/ClientDto'
       responses:
         '200':
-          description: Client updated
+          description: Cliente actualizado correctamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClientDto'
+                $ref: '#/components/schemas/BankResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -70,73 +68,72 @@ paths:
     get:
       tags:
         - clients
-      description: Use to request all clients
-      summary: Get all clients
+      description: Buscar todos los clientes
+      summary: Buscar todos los clientes
       operationId: findAllClients
       responses:
         '200':
-          description: A list of clients
+          description: Listado de clientes
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ClientDto'
-
+                  $ref: '#/components/schemas/BankResponse'
     delete:
       tags:
         - clients
-      description: Delete an existing client
-      summary: Client deleted
+      description: Eliminar un cliente existente
+      summary: Eliminar cliente
       operationId: deleteClient
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClientDto'
-      responses:
-        '200':
-          description: Client deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/ClientDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /api/clients/{id}:
-    get:
-      tags:
-        - clients
-      description: Use to request a client by ID
-      summary: Get client by ID
-      operationId: findById
       parameters:
         - name: id
           in: path
-          description: ID of client to return
+          description: ID del cliente
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: A client
+          description: Cliente eliminado correctamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClientDto'
+                $ref: '#/components/schemas/BankResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/clients/{id}:
+    get:
+      tags:
+        - clients
+      description: Buscar cliente por ID
+      summary: Buscar cliente por ID
+      operationId: findById
+      parameters:
+        - name: id
+          in: path
+          description: ID del cliente a retornar
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Obtener cliente por ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankResponse'
         '404':
           $ref: '#/components/responses/NotFound'
   /api/clients/findAllByIdList:
     post:
       tags:
         - clients
-      description: Use to request a list of clients by ID
-      summary: Get clients by ID list
+      description: Busqueda de clientes por lista de IDs
+      summary: Busqueda de clientes por lista de IDs
       operationId: findAllByIdList
       requestBody:
         required: true
@@ -154,125 +151,38 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ClientDto'
+                  $ref: '#/components/schemas/BankResponse'
         '404':
           $ref: '#/components/responses/NotFound'
   /api/clients/findByDocumentNumber/{documentNumber}:
     get:
       tags:
         - clients
-      description: Use to request a client by document number
-      summary: Get client by document number
+      description: Búsqueda de cliente por número de documento
+      summary: Búsqueda de cliente por número de documento
       operationId: findByDocumentNumber
       parameters:
         - name: documentNumber
           in: path
-          description: Document number of client to return
+          description: Número de documento del cliente a buscar
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: A client
+          description: Obtener cliente por número de documento
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClientDto'
+                $ref: '#/components/schemas/BankResponse'
         '404':
           $ref: '#/components/responses/NotFound'
-  /api/persons:
-    post:
-      tags:
-        - persons
-      description: Create a new person
-      summary: Create person
-      operationId: createPerson
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonDto'
-      responses:
-        '201':
-          description: Person created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PersonDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '409':
-          $ref: '#/components/responses/AlreadyExists'
-    put:
-      tags:
-        - persons
-      summary: Update an existing person
-      description: Update a person
-      operationId: updatePerson
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonDto'
-      responses:
-        '200':
-          description: Person updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PersonDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    get:
-      tags:
-        - persons
-      description: Use to request all persons
-      summary: Get all persons
-      operationId: findAllPersons
-      responses:
-        '200':
-          description: A list of persons
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PersonDto'
-    delete:
-      tags:
-        - persons
-      description: Delete an existing person
-      summary: Person deleted
-      operationId: deletePerson
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonDto'
-      responses:
-        '200':
-          description: Person deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/PersonDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /api/legal-representantives:
+  /api/legal-representatives:
     post:
       tags:
         - legalRepresentatives
-      description: Create a new legal representative
-      summary: Create legal representative
+      description: Crear un nuevo representante legal
+      summary: Crear representante legal
       operationId: createLegalRepresentative
       requestBody:
         required: true
@@ -282,11 +192,11 @@ paths:
               $ref: '#/components/schemas/LegalRepresentativeDto'
       responses:
         '201':
-          description: Legal representative created
+          description: Representante legal creado correctamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LegalRepresentativeDto'
+                $ref: '#/components/schemas/BankResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '409':
@@ -294,8 +204,8 @@ paths:
     put:
       tags:
         - legalRepresentatives
-      summary: Update an existing legal representative
-      description: Update a legal representative
+      description: Actualizar un representante legal existente
+      summary: Actualizar representante legal
       operationId: updateLegalRepresentative
       requestBody:
         required: true
@@ -305,11 +215,11 @@ paths:
               $ref: '#/components/schemas/LegalRepresentativeDto'
       responses:
         '200':
-          description: Legal representative updated
+          description: Representante legal actualizado correctamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LegalRepresentativeDto'
+                $ref: '#/components/schemas/BankResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -317,47 +227,46 @@ paths:
     get:
       tags:
         - legalRepresentatives
-      description: Use to request all legal representatives
-      summary: Get all legal representatives
+      description: Buscar todos los representantes legales
+      summary: Buscar representantes legales
       operationId: findAllLegalRepresentatives
       responses:
         '200':
-          description: A list of legal representatives
+          description: Lista de representantes legales
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/LegalRepresentativeDto'
+                $ref: '#/components/schemas/BankResponse'
     delete:
       tags:
         - legalRepresentatives
-      description: Delete an existing legal representative
-      summary: Legal representative deleted
+      description: Eliminar un representante legal existente
+      summary: Eliminar representante legal
       operationId: deleteLegalRepresentative
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LegalRepresentativeDto'
+      parameters:
+        - name: id
+          in: path
+          description: ID del representante legal a eliminar
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: Legal representative deleted
+          description: Representante legal eliminado correctamente
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/LegalRepresentativeDto'
+                $ref: '#/components/schemas/BankResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /api/authorized-signatories:
     post:
       tags:
         - authorizedSignatories
-      description: Create a new authorized signatory
-      summary: Create authorized signatory
+      description: Crear un nuevo firmante autorizado
+      summary: Crear firmante autorizado
       operationId: createAuthorizedSignatory
       requestBody:
         required: true
@@ -367,11 +276,11 @@ paths:
               $ref: '#/components/schemas/AuthorizedSignatoryDto'
       responses:
         '201':
-          description: Authorized signatory created
+          description: Firmante autorizado creado correctamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthorizedSignatoryDto'
+                $ref: '#/components/schemas/BankResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '409':
@@ -379,8 +288,8 @@ paths:
     put:
       tags:
         - authorizedSignatories
-      summary: Update an existing authorized signatory
-      description: Update an authorized signatory
+      description: Actualizar un firmante autorizado existente
+      summary: Actualizar firmante autorizado
       operationId: updateAuthorizedSignatory
       requestBody:
         required: true
@@ -390,11 +299,11 @@ paths:
               $ref: '#/components/schemas/AuthorizedSignatoryDto'
       responses:
         '200':
-          description: Authorized signatory updated
+          description: Firmante autorizado actualizado correctamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthorizedSignatoryDto'
+                $ref: '#/components/schemas/BankResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -402,108 +311,111 @@ paths:
     get:
       tags:
         - authorizedSignatories
-      description: Use to request all authorized signatories
-      summary: Get all authorized signatories
+      description: Buscar todos los firmantes autorizados
+      summary: Buscar firmantes autorizados
       operationId: findAllAuthorizedSignatories
       responses:
         '200':
-          description: A list of authorized signatories
+          description: Lista de firmantes autorizados
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AuthorizedSignatoryDto'
+                $ref: '#/components/schemas/BankResponse'
     delete:
       tags:
         - authorizedSignatories
-      description: Delete an existing authorized signatory
-      summary: Authorized signatory deleted
+      description: Eliminar un firmante autorizado existente
+      summary: Eliminar firmante autorizado
       operationId: deleteAuthorizedSignatory
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthorizedSignatoryDto'
+      parameters:
+        - name: id
+          in: path
+          description: ID del firmante autorizado a eliminar
+          required: true
+          schema:
+            type: string
       responses:
         '200':
-          description: Authorized signatory deleted
+          description: Firmante autorizado eliminado correctamente
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/AuthorizedSignatoryDto'
+                $ref: '#/components/schemas/BankResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
 components:
   responses:
-      NotFound:
-        description: Not found
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  description: Not found
-      AlreadyExists:
-        description: already exists
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  description: Already exists
-      BadRequest:
-        description: Bad request
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                error:
-                  type: string
-                  description: Bad request
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BankResponse'
+          example:
+            success: false
+            code: "404"
+            message: "Recurso no encontrado"
+            type: "E"
+            dateTime: "2025-01-12T10:00:00Z"
+
+    AlreadyExists:
+      description: Recurso ya existente
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BankResponse'
+          example:
+            success: false
+            code: "409"
+            message: "El recurso ya existe"
+            type: "E"
+            dateTime: "2025-01-12T10:00:00Z"
+
+    BadRequest:
+      description: Solicitud mal formada
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BankResponse'
+          example:
+            success: false
+            code: "400"
+            message: "Solicitud mal formada"
+            type: "E"
+            dateTime: "2025-01-12T10:00:00Z"
+
   schemas:
-    PersonDto:
+    LegalRepresentativeDto:
       type: object
       properties:
         id:
           type: string
-          description: person ID
-        tradeName:
-          type: string
-          description: Trade name of the company
-        companyName:
-          type: string
-          description: Company name
+          description: ID del representante legal
         name:
           type: string
-          description: Name of the person
-          pattern: '^[A-Za-z]{1,50}$'
-        lastname:
+          description: Nombre del representante legal
+        lastName:
           type: string
-          description: Lastname of the person
-          pattern: '^[A-Za-z]{1,50}$'
+          description: Apellido del representante legal
         email:
           type: string
-          description: Email of the person
+          description: Correo electrónico del representante legal
           format: email
         address:
           type: string
-          description: Address of the person
+          description: Dirección del representante legal
         cellphone:
           type: string
-          description: Cellphone of the person
+          description: Número de celular del representante legal
         phone:
           type: string
-          description: Phone of the person
+          description: Número de teléfono del representante legal
         documentType:
           type: string
-          description: Document type of the person
+          description: Tipo de documento del representante legal
           enum:
             - DNI
             - CE
@@ -511,90 +423,120 @@ components:
             - PASSPORT
         documentNumber:
           type: string
-          description: Document number of the person
-          pattern: '^[0-9]{8,12}$'
-        birthdate:
+          description: Número de documento del representante legal
+        birthDate:
           type: string
-          description: Birthdate of the person
+          description: Fecha de nacimiento del representante legal
           format: date
           pattern: '^\\d{4}-\\d{2}-\\d{2}$'
-      required:
-        - email
-        - address
-        - cellphone
-        - documentType
-        - documentNumber
-    LegalRepresentativeDto:
+        status:
+          type: boolean
+          description: Estado del representante legal
+
+    AuthorizedSignatoryDto:
       type: object
       properties:
         id:
           type: string
-          description: Legal Representative ID
-        person:
-          $ref: '#/components/schemas/PersonDto'
+          description: ID del firmante autorizado
+        name:
+          type: string
+          description: Nombre del firmante autorizado
+        lastName:
+          type: string
+          description: Apellido del firmante autorizado
+        email:
+          type: string
+          description: Correo electrónico del firmante autorizado
+          format: email
+        address:
+          type: string
+          description: Dirección del firmante autorizado
+        cellphone:
+          type: string
+          description: Número de celular del firmante autorizado
+        phone:
+          type: string
+          description: Número de teléfono del firmante autorizado
+        documentType:
+          type: string
+          description: Tipo de documento del firmante autorizado
+          enum:
+            - DNI
+            - CE
+            - RUC
+            - PASSPORT
+        documentNumber:
+          type: string
+          description: Número de documento del firmante autorizado
         status:
           type: boolean
-          description: Status of the legal representative
-      required:
-        - person
-        - status
-    AuthorizedSignatoryDto:
-      type: object
-      properties:
-          id:
-            type: string
-            description: Authorized Signatory ID
-          person:
-            $ref: '#/components/schemas/PersonDto'
-          status:
-            type: boolean
-            description: Status of the authorized signatory
-      required:
-        - person
-        - status
+          description: Estado del firmante autorizado
+
     ClientDto:
       type: object
       properties:
-          id:
-            type: string
-            description: Client ID
-          clientType:
-            type: string
-            description: Type of the client
-            enum:
-              - PERSONAL
-              - EMPRESARIAL
-          profileType:
-            type: string
-            description: Profile type of the client
-            enum:
-              - NORMAL
-              - PYME
-              - VIP
-          person:
-            $ref: '#/components/schemas/PersonDto'
-          legalRepresentatives:
-            type: array
-            items:
-              $ref: '#/components/schemas/LegalRepresentativeDto'
-          authorizedSignatories:
-            type: array
-            items:
-              $ref: '#/components/schemas/AuthorizedSignatoryDto'
-          createAt:
-            type: string
-            description: Creation date of the client
-            format: date
-            pattern: '^\\d{4}-\\d{2}-\\d{2}$'
-          endAt:
-            type: string
-            description: End date of the client
-            format: date
-            pattern: '^\\d{4}-\\d{2}-\\d{2}$'
-          status: 
-            type: boolean
-            description: Status of the client
-      required:
-        - clientType
-        - person
-        - status
+        id:
+          type: string
+          description: ID del cliente
+        clientType:
+          type: string
+          description: Tipo de cliente
+          enum:
+            - PERSONAL
+            - EMPRESARIAL
+        profileType:
+          type: string
+          description: Tipo de perfil del cliente
+          enum:
+            - NORMAL
+            - PYME
+            - VIP
+        legalRepresentatives:
+          type: array
+          description: Lista de representantes legales asociados al cliente
+          items:
+            $ref: '#/components/schemas/LegalRepresentativeDto'
+        authorizedSignatories:
+          type: array
+          description: Lista de firmantes autorizados asociados al cliente
+          items:
+            $ref: '#/components/schemas/AuthorizedSignatoryDto'
+        createAt:
+          type: string
+          description: Fecha de creación del cliente
+          format: date
+          pattern: '^\\d{4}-\\d{2}-\\d{2}$'
+        endAt:
+          type: string
+          description: Fecha de finalización del cliente
+          format: date
+          pattern: '^\\d{4}-\\d{2}-\\d{2}$'
+        status:
+          type: boolean
+          description: Estado del cliente
+    BankResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indica si la operación fue exitosa
+        code:
+          type: string
+          description: Código de respuesta (ej. 200, 400, 500)
+        message:
+          type: string
+          description: Descripción del resultado o error
+        type:
+          type: string
+          description: Tipo de excepción
+          enum:
+            - Advertencia
+            - Error
+        data:
+          type: object
+          description: Datos retornados en caso de éxito
+        dateTime:
+          type: string
+          description: Fecha y hora de la respuesta
+          format: date-time

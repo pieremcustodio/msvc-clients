@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.piere.bootcamp.clients.model.enums.DocumentTypeEnum;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -43,8 +45,33 @@ public class Client implements Serializable {
     @Field(name = "profile_type")
     private ProfileTypeEnum profileType;
 
-    @Field(name = "person_id")
-    private String personId;
+    private String name;
+
+    @Field(name = "last_name")
+    private String lastName;
+
+    @Field(name = "company_name")
+    private String companyName;
+
+    private String email;
+
+    private String address;
+
+    private String cellphone;
+
+    private String phone;
+
+    @Field(name = "document_type")
+    private DocumentTypeEnum documentType;
+
+    @Field(name = "document_number")
+    @Indexed(unique = true)
+    private String documentNumber;
+
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @Field(name = "birth_date")
+    private LocalDate birthDate;
 
     @Builder.Default
     @ToString.Exclude
@@ -61,11 +88,6 @@ public class Client implements Serializable {
     @Field(name = "create_at")
     private LocalDate createAt;
 
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @Field(name = "end_at")
-    private LocalDate endAt;
-
     private Boolean status;
-    
+
 }

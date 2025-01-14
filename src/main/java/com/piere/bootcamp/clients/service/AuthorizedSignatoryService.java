@@ -13,11 +13,13 @@ public interface AuthorizedSignatoryService {
 
     Mono<AuthorizedSignatoryDto> updateAuthorizedSignatory(AuthorizedSignatoryDto authorizedSignatory);
 
-    Mono<Void> deleteAuthorizedSignatory(AuthorizedSignatoryDto authorizedSignatory);
+    Mono<Void> deleteAuthorizedSignatoryById(String id);
 
     Mono<AuthorizedSignatoryDto> findByDocumentNumber(String documentNumber);
 
     Flux<AuthorizedSignatoryDto> findAllAuthorizedSignatories();
 
     Flux<AuthorizedSignatoryDto> createAuthorizedSignatories(List<AuthorizedSignatoryDto> authorizedSignatories);
+
+    Flux<AuthorizedSignatoryDto> findAllByIdList(List<String> idList);
 }
